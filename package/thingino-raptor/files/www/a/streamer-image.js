@@ -83,7 +83,7 @@
     body[PAYLOAD_MAP[id]] = node.value;
     helper
       .agentRequest("/api/v1/settings/" + endpoint, {
-        method: "POST",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       })
