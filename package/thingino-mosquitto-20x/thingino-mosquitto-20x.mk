@@ -4,10 +4,10 @@
 #
 ################################################################################
 
-THINGINO_MOSQUITTO_20X_VERSION = 2.0.22
-# mosquitto.org hosting is down (2026-10-21); 2.0.23 has no mirror or GitHub
-# tag, so pin 2.0.22 until upstream hosting returns and a real release exists.
-THINGINO_MOSQUITTO_20X_SITE = https://sources.buildroot.net/mosquitto
+THINGINO_MOSQUITTO_20X_VERSION = 2.0.23
+# mosquitto.org hosting is down since 2026-10-21; serve the gpg-verified
+# 2.0.23 tarball (sha 47d66fc9...) from this branch until upstream returns.
+THINGINO_MOSQUITTO_20X_SITE = https://raw.githubusercontent.com/WLTB-Gino/thingino-firmware/gino/v4-white-lamp-build/dl/thingino-mosquitto-20x
 THINGINO_MOSQUITTO_20X_SOURCE = mosquitto-$(THINGINO_MOSQUITTO_20X_VERSION).tar.gz
 THINGINO_MOSQUITTO_20X_LICENSE = EPL-2.0 or EDLv1.0
 THINGINO_MOSQUITTO_20X_LICENSE_FILES = LICENSE.txt epl-v20 edl-v10
