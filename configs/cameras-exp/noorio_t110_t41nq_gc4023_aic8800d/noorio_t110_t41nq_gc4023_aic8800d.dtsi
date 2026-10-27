@@ -1,0 +1,42 @@
+// Noorio T110 pan-tilt (T41NQ, GC4023, AIC8800 USB) per-board GPIO definitions.
+// Injected into the kernel 4.4+ device tree; ignored on 3.10.
+//
+// Pins per stock-firmware reverse engineering (Josh, 2026-10-22) and the
+// 2026-10-26 U-Boot bench probe:
+//   PB30 (gpio 62)  SD card detect, active-high
+//   PA30 (gpio 30)  reset button, active-low
+//   PC9  (gpio 73)  blue status LED, active-high
+// SD power stays runtime-side: gpio.mmc_power (PB29/61, active-low) is
+// sequenced by S09mmc and injected into U-Boot's vmmc from thingino.json.
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/pinctrl/ingenic-pinctrl.h>
+
+/* Card detect; the family tree carries the reference pin (gpb 27). */
+&msc0 {
+	ingenic,cd-gpios = <&gpb 30 GPIO_ACTIVE_HIGH INGENIC_GPIO_PULLUP>;
+};
+
+/ {
+	gpio-keys {
+		compatible = "gpio-keys";
+		label = "gpio-keys";
+
+		reset {
+			label = "reset";
+			linux,code = <KEY_ENTER>;
+			gpios = <&gpa 30 GPIO_ACTIVE_LOW INGENIC_GPIO_PULLUP>;
+		};
+	};
+
+	gpio-leds {
+		compatible = "gpio-leds";
+
+		led_b {
+			label = "led_b";
+			gpios = <&gpc 9 GPIO_ACTIVE_HIGH INGENIC_GPIO_NOBIAS>;
+			default-state = "off";
+		};
+	};
+};
