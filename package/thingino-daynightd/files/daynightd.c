@@ -692,6 +692,32 @@ static int parse_isp_m0(sensor_sample_t *s) {
             sscanf(line, "ISP WB weighted bgain: %d", &s->wb_bgain);
         else if (strstr(line, "ISP WB color temperature:"))
             sscanf(line, "ISP WB color temperature: %d", &s->wb_color_temp);
+        /* T41 (Gen-3 ISP) field set — additive; these lines are absent from
+         * T31/T23/T20 isp-m0 files, and the T31-format lines above are absent
+         * from T41 files. EVLog2 is the same Q16 log2-EV metric the T31 parser
+         * feeds primary_signal with, so the default thresholds carry over. */
+        else if (strstr(line, "EVLog2 :"))
+            sscanf(line, "EVLog2 : %d", &s->ev_log2);
+        else if (strstr(line, "AeIntegrationTime :"))
+            sscanf(line, "AeIntegrationTime : %d", &s->integration_time);
+        else if (strstr(line, "AeMaxIntegrationTime :"))
+            sscanf(line, "AeMaxIntegrationTime : %d", &s->max_integration_time);
+        else if (strstr(line, "AeAGain :"))
+            sscanf(line, "AeAGain : %d", &s->analog_gain);
+        else if (strstr(line, "AeMaxAGain :"))
+            sscanf(line, "AeMaxAGain : %d", &s->max_analog_gain);
+        else if (strstr(line, "AeDGain :"))
+            sscanf(line, "AeDGain : %d", &s->digital_gain);
+        else if (strstr(line, "AeIspDGain :"))
+            sscanf(line, "AeIspDGain : %d", &s->isp_digital_gain);
+        else if (strstr(line, "AeMaxIspDGain :"))
+            sscanf(line, "AeMaxIspDGain : %d", &s->max_isp_digital_gain);
+        else if (strstr(line, "AWBWeighted R/G:"))
+            sscanf(line, "AWBWeighted R/G: %d", &s->wb_rgain);
+        else if (strstr(line, "AWBWeighted B/G:"))
+            sscanf(line, "AWBWeighted B/G: %d", &s->wb_bgain);
+        else if (strstr(line, "AWBColorTemperature:"))
+            sscanf(line, "AWBColorTemperature: %d", &s->wb_color_temp);
     }
     fclose(fp);
 
