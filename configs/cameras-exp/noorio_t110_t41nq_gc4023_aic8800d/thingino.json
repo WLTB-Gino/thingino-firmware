@@ -26,6 +26,13 @@
     "homing": false,
     "steps_pan": 5300,
     "steps_tilt": 1100,
+    "speed_pan": 700,
+    "speed_tilt": 700,
+    "gpio_pan": "40 44 45 51",
+    "gpio_tilt": "47 48 49 50",
+    "invert_x": false,
+    "invert_y": false,
+    "is_spi": false,
     "presets": []
   },
   "sensor": {
@@ -37,8 +44,8 @@
     "reset_gpio": -1
   },
   "notes": {
-    "t110": "gpio73=PC9 status LED (0.5s heartbeat); gpio58=PB26 WiFi IRQ; gpio62=PB30 SD-CD active-high; gpio30=PA30 reset button active-low; gpio61=PB29 SD power (active-low enable, BENCH-CONFIRMED 2026-10-26: U-Boot gpio clear 61 + mmc rescan enumerates the card; moved out of wlan seq, it was cutting SD power mid-boot); gpio60=PB28 REGON stays in wlan seq; speaker amp en gpio63. LeCam GPIOHelper set {0,46,49,50,63,73,75}: gpio46=IR LED, gpio49/50=ircut pair, gpio75=white lamp (device has light temperature+intensity profiles) - held in reserve until hardware-verified. MOTORS ARE PWM/TCU (motor.ko, pan maxstep 5300 / elev 1100, coil pins in SMHLROQP table, candidates B8/B9/B17/B18/C15/C18) - NOT GPIO; left unconfigured here pending coil-pin scope work; thingino has no motor.ko ioctl driver class yet.",
-    "t110_source": "Josh reverse-engineering 2026-10-22: DTS + boot logs + live QEMU + stock scripts; gpio61 SD-power correction from U-Boot bench probe 2026-10-26 (Josh). Ported to ciao 2026-10-26 (branch gino/noorio-t110-ciao): identical values as the validated master build.",
+    "t110": "gpio73=PC9 status LED (0.5s heartbeat, now via .dtsi gpio-leds); gpio58=PB26 WiFi IRQ; gpio62=PB30 SD-CD active-high + gpio30=PA30 reset button + led_b now flow through the .dtsi fragment (kernel DT, U-Boot injection, BUTTON_PIN all derive from it); gpio61=PB29 SD power (active-low enable, BENCH-CONFIRMED 2026-10-26 via U-Boot gpio clear 61 + mmc rescan; stays runtime-side via gpio.mmc_power -> S09mmc); gpio60=PB28 REGON stays in wlan seq; speaker amp en gpio63. gpio46=IR LED, gpio49/50=ircut pair, gpio75=white lamp (reserve until hardware-verified). MOTORS (decoded 2026-10-27 from stock motor.ko by Josh, SMHLROQP cipher, letter = GPIO code-64): pan phases 40/44/45/51 (PC8/PC12/PC13/PC19), tilt 47/48/49/50 (PC15-18, matches stock pwm-pc group), steps 5300/1100. Requires package/ingenic-sdk 0004 patch (ciao-pinned SDK lacks the 4.4.94 unified module-param interface; master's thingino/ingenic-sdk pin already has it upstream). No limit switches. Homing stays off until arrow-pad direction is bench-proven.",
+    "t110_source": "Josh reverse-engineering 2026-10-22: DTS + boot logs + live QEMU + stock scripts; gpio61 SD-power correction from U-Boot bench probe 2026-10-26 (Josh); motor phase pins decoded from stock motor.ko .data 2026-10-27 (Josh). Ported to ciao 2026-10-26 (branch gino/noorio-t110-ciao): identical values as the validated master build.",
     "t110_ciao": "Ported to ciao 2026-10-26 (branch gino/noorio-t110-ciao): identical values as the validated master build; ciao-specifics handled in the defconfig (2026.07 U-Boot pin) and the wifi-aic8800 WEXT cherry-pick (10188534b). SD power + card detect now flow through the same inject-uboot-mmc-dt.sh / inject-uboot-gpio-dt.sh / S09mmc plumbing as master (all present on ciao, gated only by the 2013.07 default)."
   }
 }
