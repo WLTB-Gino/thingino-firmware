@@ -1,5 +1,6 @@
 # NAME: Noorio T110 pan-tilt (T41NQ, GC4023, AIC8800 USB) — ciao port
 # FRAG: soc-xburst2 core
+BR2_INGENIC_SOC_MODEL="t41nq"
 # Source: stock-firmware reverse engineering 2026-10-22 (Josh) + first-boot
 #         bench 2026-10-24 (WiFi enumerated on USB: lsusb a69c:8800 aicsemi,
 #         NOT SDIO) + U-Boot bench probe 2026-10-26 (gpio61/PB29 = SD power,
@@ -18,7 +19,11 @@
 #       wifi-aic8800 carries the CFG80211_WEXT fixup here via cherry-pick
 #       10188534b (same as master PR #1879). SDCARD=y keeps thingino-mmc in
 #       the image so S09mmc runs the gpio.mmc_power power-on sequence.
-BR2_INGENIC_SOC_MODEL="t41nq"
+# 2026-10-27: KOPT kernel extension enabled so the profile .dtsi fragment
+#       (cd-gpios gpb30 / reset key gpa30 / led_b gpc9) injects into the
+#       4.4.94 device tree — without it the kernel watches the family-tree
+#       default cd pin (gpb 27) and card insertions never register.
+BR2_LINUX_KERNEL_EXT_THINGINO_KOPT=y
 BR2_PACKAGE_THINGINO_KOPT_MMC0=y
 BR2_PACKAGE_THINGINO_KOPT_MMC0_PB_4BIT=y
 BR2_PACKAGE_THINGINO_UBOOT_FLASH_CONTROLLER_JZ_SFC=n
