@@ -1,0 +1,34 @@
+From 0000000000000000000000000000000000000005 Mon Sep 17 00:00:00 2001
+From: Paul Philippov <paul@themactep.com>
+Date: Sun, 25 Oct 2026 17:00:00 -0400
+Subject: [PATCH 5/5] motor: let devres free the device
+
+thingino fix for #1351, regenerated as a continuation diff for the
+pinned vintage source layout (common/misc/motor): motor_probe()
+allocates mdev with devm_kzalloc() but the probe error path and
+motor_remove() also kfree() it, so devres frees the device a second
+time - kernel heap corruption on failed probe and on module
+unload/reload. The ms419xx copy of the same pattern is not touched
+here (not built for this board).
+
+Signed-off-by: Paul Philippov <paul@themactep.com>
+---
+  1 file changed, 2 deletions(-)
+--- a/common/misc/motor/motor.c
++++ b/common/misc/motor/motor.c
+@@ -995,7 +995,6 @@ error_min_gpio:
+ 		del_timer_sync(&motor->min_timer);
+ 		del_timer_sync(&motor->max_timer);
+ 	}
+-	kfree(mdev);
+ error_devm_kzalloc:
+ 	return ret;
+ }
+@@ -1046,7 +1045,6 @@ static int motor_remove(struct platform_device *pdev)
+ 
+ 	misc_deregister(&mdev->misc_dev);
+ 
+-	kfree(mdev);
+ 	return 0;
+ }
+ 

@@ -14,10 +14,8 @@ defaulting disabled (switch-less heads) and the reference-board limit
 pull-ups only asserted when a limit GPIO is actually configured.
 
 ---
-  1 file changed, 170 insertions(+), 32 deletions(-)
+  1 file changed, 160 insertions(+), 32 deletions(-)
 
-diff --git a/common/misc/motor/motor.c b/common/misc/motor/motor.c
-index a3a49ac..740bbbb 100644
 --- a/common/misc/motor/motor.c
 +++ b/common/misc/motor/motor.c
 @@ -1,9 +1,17 @@
@@ -186,24 +184,7 @@ index a3a49ac..740bbbb 100644
  		}
  		if(motor->state == MOTOR_OPS_RESET){
  			motor->total_steps++;
-@@ -153,6 +252,16 @@ static irqreturn_t jz_timer_interrupt(int irq, void *dev_id)
- 			&& motors[VERTICAL_MOTOR].state == MOTOR_OPS_STOP){
- 		mdev->dev_state = MOTOR_OPS_STOP;
- 		motor_move_step(mdev);
-+		/*
-+		 * thingino: halt the free-running TCU counter once idle. The
-+		 * stock driver started the counter at probe and never stopped
-+		 * it after a move, so this timer IRQ fired forever - wasted
-+		 * cycles, and it wedged/panicked the SoC under repeated moves
-+		 * and module reload. A new move re-arms it via
-+		 * ingenic_tcu_counter_begin() in motor_ops_move(). Register
-+		 * write only (tcu_disable_counter), safe from IRQ context.
-+		 */
-+		ingenic_tcu_counter_stop(mdev->tcu);
- 		return IRQ_HANDLED;
- 	}
- 
-@@ -299,27 +408,36 @@ static long motor_ops_move(struct motor_device *mdev, int x, int y)
+@@ -299,27 +398,36 @@ static long motor_ops_move(struct motor_device *mdev, int x, int y)
  	int times = 1;
  	int value = 0;
  
@@ -259,7 +240,7 @@ index a3a49ac..740bbbb 100644
  	x_dir = x > 0 ? MOTOR_MOVE_RIGHT_UP : (x < 0 ? MOTOR_MOVE_LEFT_DOWN: MOTOR_MOVE_STOP);
  	y_dir = y > 0 ? MOTOR_MOVE_RIGHT_UP : (y < 0 ? MOTOR_MOVE_LEFT_DOWN: MOTOR_MOVE_STOP);
  	x1 = x < 0 ? 0 - x : x;
-@@ -833,6 +951,19 @@ static int motor_probe(struct platform_device *pdev)
+@@ -833,6 +941,19 @@ static int motor_probe(struct platform_device *pdev)
  	proc_create_data("motor_info", S_IRUGO, proc, &motor_info_fops, (void *)mdev);
  
  	motor_set_default(mdev);
@@ -279,7 +260,7 @@ index a3a49ac..740bbbb 100644
  	mdev->flag = 0;
  	ingenic_tcu_counter_begin(mdev->tcu);
  
-@@ -929,17 +1060,24 @@ static int motor_remove(struct platform_device *pdev)
+@@ -929,17 +1050,24 @@ static int motor_remove(struct platform_device *pdev)
  	return 0;
  }
  
