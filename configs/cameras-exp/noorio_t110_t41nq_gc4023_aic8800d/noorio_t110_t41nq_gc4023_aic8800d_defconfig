@@ -20,9 +20,11 @@ BR2_INGENIC_SOC_MODEL="t41nq"
 #       10188534b (same as master PR #1879). SDCARD=y keeps thingino-mmc in
 #       the image so S09mmc runs the gpio.mmc_power power-on sequence.
 # 2026-10-27: KOPT kernel extension enabled so the profile .dtsi fragment
-#       (cd-gpios gpb30 / reset key gpa30 / led_b gpc9) injects into the
-#       4.4.94 device tree — without it the kernel watches the family-tree
-#       default cd pin (gpb 27) and card insertions never register.
+#       (cd-gpios gpb26 + cd-inverted / reset key gpa30 / led_b gpc9) injects
+#       into the 4.4.94 device tree — without it the MSC0 node has no GPIO
+#       card detect and card insertions never register. Pin corrected from
+#       gpb27 to stock-DTB ground truth gpb26 on 2026-11-05 (vempi): stock
+#       ships cd-gpios <&gpb 26> ACTIVE_LOW *and* cd-inverted together.
 BR2_LINUX_KERNEL_EXT_THINGINO_KOPT=y
 BR2_PACKAGE_THINGINO_KOPT_MMC0=y
 BR2_PACKAGE_THINGINO_KOPT_MMC0_PB_4BIT=y
