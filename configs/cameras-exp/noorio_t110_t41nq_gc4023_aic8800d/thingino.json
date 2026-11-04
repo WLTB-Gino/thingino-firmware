@@ -23,17 +23,23 @@
     ]
   },
   "motors": {
+    "accel_pan": 0,
+    "accel_tilt": 0,
+    "gpio_focus": -1,
+    "gpio_invert": false,
+    "gpio_pan": "83 76 72 77",
+    "gpio_switch": false,
+    "gpio_tilt": "82 79 81 80",
     "homing": false,
-    "steps_pan": 5300,
-    "steps_tilt": 1100,
-    "speed_pan": 700,
-    "speed_tilt": 700,
-    "gpio_pan": "77 76 72 83",
-    "gpio_tilt": "80 81 79 82",
     "invert_x": false,
     "invert_y": false,
     "is_spi": false,
-    "presets": []
+    "motion_driver": "legacy",
+    "presets": [],
+    "speed_pan": 700,
+    "speed_tilt": 700,
+    "steps_pan": 5300,
+    "steps_tilt": 1100
   },
   "sensor": {
     "i2c_adapter": 0,
@@ -44,7 +50,7 @@
     "reset_gpio": -1
   },
   "notes": {
-    "t110": "gpio73=PC9 status LED (0.5s heartbeat, now via .dtsi gpio-leds); gpio58=PB26 WiFi IRQ; gpio62=PB30 SD-CD active-high + gpio30=PA30 reset button + led_b now flow through the .dtsi fragment (kernel DT, U-Boot injection, BUTTON_PIN all derive from it); gpio61=PB29 SD power (active-low enable, BENCH-CONFIRMED 2026-10-26 via U-Boot gpio clear 61 + mmc rescan; stays runtime-side via gpio.mmc_power -> S09mmc); gpio60=PB28 REGON stays in wlan seq; speaker amp en gpio63. gpio46=IR LED, gpio49/50=ircut pair, gpio75=white lamp (reserve until hardware-verified). MOTORS (decoded 2026-10-27 from stock motor.ko by Josh, SMHLROQP cipher, letter = GPIO code-64): pan wires SMHL = PC19/PC13/PC8/PC12 = gpio 83/77/72/76, tilt wires ROQP = PC18/PC15/PC17/PC16 = gpio 82/79/81/80; stock bit-to-wire convention (disassembly Oct-28) is bit0 = FIRST wire, bit3 = LAST, and the driver maps st1..st4 = bit3..bit0, so the json strings must list wires in stock RING order: pan M,L,H,S = 77/76/72/83, tilt P,Q,O,R = 80/81/79/82 (corrected 2026-11-03: builds 1-4 shipped ascending-sorted strings, which scrambled the tilt excitation ring, energizing non-adjacent coil pairs = near-zero torque = the twitch-without-rotation symptom; pan was merely direction-reversed) (PC bank = offset 64; pin numbers below 64 were a bank-offset transcription error, shipped in build a0cc3c3 and bench-proven wrong 2026-10-28 — tilt pins landed on PB17/PB18 = the ircut pair, solenoid click with no pan/tilt motion), steps 5300/1100. Requires package/ingenic-sdk 0004 patch (ciao-pinned SDK lacks the 4.4.94 unified module-param interface; master's thingino/ingenic-sdk pin already has it upstream). No limit switches. Homing stays off until arrow-pad direction is bench-proven.",
+    "t110": "gpio73=PC9 status LED (0.5s heartbeat, now via .dtsi gpio-leds); gpio58=PB26 WiFi IRQ; gpio62=PB30 SD-CD active-high + gpio30=PA30 reset button + led_b now flow through the .dtsi fragment (kernel DT, U-Boot injection, BUTTON_PIN all derive from it); gpio61=PB29 SD power (active-low enable, BENCH-CONFIRMED 2026-10-26 via U-Boot gpio clear 61 + mmc rescan; stays runtime-side via gpio.mmc_power -> S09mmc); gpio60=PB28 REGON stays in wlan seq; speaker amp en gpio63. gpio46=IR LED, gpio49/50=ircut pair, gpio75=white lamp (reserve until hardware-verified). MOTORS (decoded 2026-10-27 from stock motor.ko by Josh, SMHLROQP cipher, letter = GPIO code-64): pan wires SMHL = PC19/PC13/PC8/PC12 = gpio 83/77/72/76, tilt wires ROQP = PC18/PC15/PC17/PC16 = gpio 82/79/81/80; stock bit-to-wire convention (disassembly Oct-28) is bit0 = FIRST wire, bit3 = LAST, and the driver maps st1..st4 = bit3..bit0, so the json strings must list wires in stock RING order: pan M,L,H,S = 77/76/72/83, tilt P,Q,O,R = 80/81/79/82 (2026-11-04 golden-bench: Josh's WORKING device runs reverse-ring pan S,L,H,M = 83/76/72/77, tilt R,O,Q,P = 82/79/81/80 — same excitation cycle, opposite spin direction; profile now carries these golden values. Builds 1-4 additionally shipped ascending-sorted strings which scrambled the tilt excitation ring = non-adjacent coil pairs = near-zero torque twitch) (PC bank = offset 64; pin numbers below 64 were a bank-offset transcription error, shipped in build a0cc3c3 and bench-proven wrong 2026-10-28 — tilt pins landed on PB17/PB18 = the ircut pair, solenoid click with no pan/tilt motion), steps 5300/1100. Requires package/ingenic-sdk 0004 patch (ciao-pinned SDK lacks the 4.4.94 unified module-param interface; master's thingino/ingenic-sdk pin already has it upstream). No limit switches. Homing stays off until arrow-pad direction is bench-proven.",
     "t110_source": "Josh reverse-engineering 2026-10-22: DTS + boot logs + live QEMU + stock scripts; gpio61 SD-power correction from U-Boot bench probe 2026-10-26 (Josh); motor phase pins decoded from stock motor.ko .data 2026-10-27 (Josh). Ported to ciao 2026-10-26 (branch gino/noorio-t110-ciao): identical values as the validated master build.",
     "t110_ciao": "Ported to ciao 2026-10-26 (branch gino/noorio-t110-ciao): identical values as the validated master build; ciao-specifics handled in the defconfig (2026.07 U-Boot pin) and the wifi-aic8800 WEXT cherry-pick (10188534b). SD power + card detect now flow through the same inject-uboot-mmc-dt.sh / inject-uboot-gpio-dt.sh / S09mmc plumbing as master (all present on ciao, gated only by the 2013.07 default)."
   }
