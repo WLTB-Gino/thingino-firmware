@@ -1,4 +1,4 @@
-// Noorio T110 pan-tilt (T41NQ, GC4023, AIC8800 USB) per-board GPIO definitions.
+// Noorio T110 (T41NQ, GC4023, AIC8800 USB) per-board GPIO definitions.
 // Injected into the kernel 4.4+ device tree; ignored on 3.10.
 //
 // Pins per stock-firmware reverse engineering (Josh, 2026-10-22), the
