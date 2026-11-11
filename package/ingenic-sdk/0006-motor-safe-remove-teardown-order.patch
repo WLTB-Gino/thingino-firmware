@@ -58,10 +58,10 @@ Signed-off-by: Gino (WLTB-Gino) <gino@wltechblog.com>
  	}
  
  	if (mdev->proc)
-@@ -1041,3 +1040,12 @@
+@@ -1044,6 +1042,15 @@
+ 		proc_remove(mdev->proc);
  
  	misc_deregister(&mdev->misc_dev);
- 
 +	/*
 +	 * Userspace is gone and every callback touching mdev has been
 +	 * stopped: tear down the mutex and TCU channel after the device
@@ -71,3 +71,6 @@ Signed-off-by: Gino (WLTB-Gino) <gino@wltechblog.com>
 +	mutex_destroy(&mdev->dev_mutex);
 +
 +	ingenic_tcu_counter_stop(mdev->tcu);
+ 
+ 	return 0;
+ }
