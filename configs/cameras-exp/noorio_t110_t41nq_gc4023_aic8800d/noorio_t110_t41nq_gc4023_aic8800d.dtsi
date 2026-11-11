@@ -6,14 +6,14 @@
 // factory flash (vempi, 2026-11-05):
 //   PB26 (gpio 58)  SD card detect. Stock msc0 ships BOTH the active-low
 //                   flag AND cd-inverted together (cd-gpios = <&gpb 26
-//                   GPIO_ACTIVE_LOW>; cd-inverted;) — the vendor sdhci
+//                   GPIO_ACTIVE_LOW>; cd-inverted;) -- the vendor sdhci
 //                   driver only switches to GPIO detection when
 //                   cd-inverted is present, so neither line may be dropped.
 //   PA30 (gpio 30)  reset button, active-low (stock DT: power button)
 //   PC9  (gpio 73)  blue status LED, active-high
-//   PB27 (gpio 59)  USB OTG drvvbus in the stock DT — not card detect
+//   PB27 (gpio 59)  USB OTG drvvbus in the stock DT -- not card detect
 //                   (earlier PB27/PB30 SD-CD theories were wrong)
-// PB29 (gpio 61) is SD power (gpio.mmc_power, active-low) — runtime-side,
+// PB29 (gpio 61) is SD power (gpio.mmc_power, active-low) -- runtime-side,
 // sequenced by S09mmc and injected into U-Boot's vmmc from thingino.json;
 // stock mmc0_pwrseq reset-gpios = <&gpb 29> confirms the same pin.
 

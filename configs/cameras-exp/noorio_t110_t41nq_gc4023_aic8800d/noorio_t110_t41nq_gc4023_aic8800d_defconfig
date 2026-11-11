@@ -2,7 +2,7 @@
 # FRAG: soc-xburst2 core
 BR2_INGENIC_SOC_MODEL="t41nq"
 # Source: stock-firmware reverse engineering 2026-10-22 + bench findings:
-#   WiFi is USB plain-8800 (lsusb a69c:8800), NOT SDIO — the directory name
+#   WiFi is USB plain-8800 (lsusb a69c:8800), NOT SDIO -- the directory name
 #   says "aic8800d" for profile-name stability only.
 #   gpio61/PB29 = SD power, active-low (was mis-listed as a wlan pwrseq pin
 #   and cut SD power mid-boot; runs via gpio.mmc_power -> S09mmc).
@@ -10,7 +10,7 @@ BR2_INGENIC_SOC_MODEL="t41nq"
 #   cd-inverted TOGETHER). WiFi enable is gpb25 (user-corrected 2026-11-10;
 #   not gpio60/PB28 REGON).
 # KOPT kernel extension enabled so the profile .dtsi fragment (cd-gpios,
-#   reset key gpa30, led_b gpc9) injects into the 4.4.94 device tree —
+#   reset key gpa30, led_b gpc9) injects into the 4.4.94 device tree --
 #   without it the MSC0 node has no card-detect GPIO.
 # U-Boot pinned to 2026.07 (the master default): 2013.07 has no
 #   isvp_t41nq board targets ("No rule to make target
