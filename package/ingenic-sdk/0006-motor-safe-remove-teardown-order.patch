@@ -23,6 +23,11 @@ stop the TCU counter.
 Companion to 0005 (devres double-free); together they close the
 teardown races seen around runtime motor.ko reload on noorio t110.
 
+The final insertion anchors on misc_deregister() alone (no trailing
+context) so it applies both where a kfree(mdev) remains before
+return (themactep sdk pins) and where it has been dropped
+(thingino sdk pins).
+
 Signed-off-by: Gino (WLTB-Gino) <gino@wltechblog.com>
 --- a/common/misc/motor/motor.c
 +++ b/common/misc/motor/motor.c
@@ -53,7 +58,7 @@ Signed-off-by: Gino (WLTB-Gino) <gino@wltechblog.com>
  	}
  
  	if (mdev->proc)
-@@ -1045,6 +1043,16 @@
+@@ -1041,3 +1040,12 @@
  
  	misc_deregister(&mdev->misc_dev);
  
@@ -66,7 +71,3 @@ Signed-off-by: Gino (WLTB-Gino) <gino@wltechblog.com>
 +	mutex_destroy(&mdev->dev_mutex);
 +
 +	ingenic_tcu_counter_stop(mdev->tcu);
-+
- 	return 0;
- }
- 

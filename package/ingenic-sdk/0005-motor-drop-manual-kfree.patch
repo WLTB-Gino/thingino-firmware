@@ -1,0 +1,34 @@
+From 0000000000000000000000000000000000000005 Mon Sep 17 00:00:00 2001
+From: Paul Philippov <paul@themactep.com>
+Date: Sun, 25 Oct 2026 17:00:00 -0400
+Subject: [PATCH 5/6] ingenic-sdk: motor: let devres free the device
+
+`motor_probe()` allocates `mdev` with `devm_kzalloc()`, but the probe
+error path and `motor_remove()` both call `kfree(mdev)` as well. The
+device is then freed a second time when devres releases it, corrupting
+the kernel heap on a failed probe and on module unload/reboot.
+
+Port of the thingino-firmware master fix (0005-motor-drop-manual-kfree)
+to the themactep/ingenic-sdk layout used by the ciao line, which still
+carries the bug. 4.4.94 motor.c only; the 3.10.14 ms419xx copy is
+covered by the master patch and is not built for this target.
+
+Signed-off-by: Gino (WLTB-Gino) <gino@wltechblog.com>
+---
+--- a/common/misc/motor/motor.c
++++ b/common/misc/motor/motor.c
+@@ -874,7 +874,6 @@
+ 		del_timer_sync(&motor->min_timer);
+ 		del_timer_sync(&motor->max_timer);
+ 	}
+-	kfree(mdev);
+ error_devm_kzalloc:
+ 	return ret;
+ }
+@@ -925,7 +924,6 @@
+ 
+ 	misc_deregister(&mdev->misc_dev);
+ 
+-	kfree(mdev);
+ 	return 0;
+ }
