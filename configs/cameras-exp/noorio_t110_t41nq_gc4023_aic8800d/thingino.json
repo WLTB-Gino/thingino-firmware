@@ -27,15 +27,23 @@
     "accel_tilt": 0,
     "gpio_focus": -1,
     "gpio_invert": false,
-    "gpio_pan": "83 77 72 76",
+    "gpio_pan": "76 72 77 83",
     "gpio_switch": false,
-    "gpio_tilt": "82 79 81 80",
-    "homing": false,
+    "gpio_tilt": "80 81 79 82",
+    "homing": true,
     "invert_x": false,
     "invert_y": false,
     "is_spi": false,
     "motion_driver": "legacy",
-    "presets": [],
+    "presets": [
+      {
+        "id": 0,
+        "name": "Home",
+        "x": 2560,
+        "y": 868
+      }
+    ],
+    "preview_control_mode": "step",
     "speed_pan": 700,
     "speed_tilt": 700,
     "steps_pan": 5300,
