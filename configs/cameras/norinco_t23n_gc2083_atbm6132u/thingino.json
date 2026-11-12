@@ -1,0 +1,8 @@
+{
+  "gpio": {
+    "ircut": "60 14",
+    "ir850": 50,
+    "button_reset": 62,
+    "led_b": 57
+  }
+}
