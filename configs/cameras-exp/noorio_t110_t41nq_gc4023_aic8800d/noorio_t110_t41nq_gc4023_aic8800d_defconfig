@@ -1,21 +1,6 @@
 # NAME: Noorio T110 (T41NQ, GC4023, AIC8800 USB)
 # FRAG: soc-xburst2 core
 BR2_INGENIC_SOC_MODEL="t41nq"
-# Source: stock-firmware reverse engineering 2026-10-22 + bench findings:
-#   WiFi is USB plain-8800 (lsusb a69c:8800), NOT SDIO -- the directory name
-#   says "aic8800d" for profile-name stability only.
-#   gpio61/PB29 = SD power, active-low (was mis-listed as a wlan pwrseq pin
-#   and cut SD power mid-boot; runs via gpio.mmc_power -> S09mmc).
-#   Card detect is gpb26 per the stock DTB (cd-gpios ACTIVE_LOW and
-#   cd-inverted TOGETHER). WiFi enable is gpb25 (user-corrected 2026-11-10;
-#   not gpio60/PB28 REGON).
-# KOPT kernel extension enabled so the profile .dtsi fragment (cd-gpios,
-#   reset key gpa30, led_b gpc9) injects into the 4.4.94 device tree --
-#   without it the MSC0 node has no card-detect GPIO.
-# U-Boot pinned to 2026.07 (the master default): 2013.07 has no
-#   isvp_t41nq board targets ("No rule to make target
-#   'isvp_t41nq_sfcnor_config'") and gates the MMC/GPIO DT inject hooks.
-# SDCARD=y keeps thingino-mmc in the image for the SD power-on sequence.
 BR2_LINUX_KERNEL_EXT_THINGINO_KOPT=y
 BR2_PACKAGE_THINGINO_KOPT_MMC0=y
 BR2_PACKAGE_THINGINO_KOPT_MMC0_PB_4BIT=y
@@ -33,7 +18,6 @@ BR2_THINGINO_BUTTON=y
 BR2_THINGINO_MOTORS=y
 BR2_THINGINO_NMEM_MB=8
 BR2_THINGINO_SDCARD=y
-# U-Boot pinned explicitly: the 2013.07 fallback has no isvp_t41nq targets
 # BR2_THINGINO_UBOOT_VERSION_2013_07 is not set
 BR2_THINGINO_UBOOT_VERSION_2026_07=y
 FLASH_SIZE_MB=32

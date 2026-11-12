@@ -1,28 +1,16 @@
-// Noorio T110 (T41NQ, GC4023, AIC8800 USB) per-board GPIO definitions.
-// Injected into the kernel 4.4+ device tree; ignored on 3.10.
-//
-// Pins per stock-firmware reverse engineering (Josh, 2026-10-22), the
-// 2026-10-26 U-Boot bench probe, and the stock DTB decompiled from the
-// factory flash (vempi, 2026-11-05):
-//   PB26 (gpio 58)  SD card detect. Stock msc0 ships BOTH the active-low
-//                   flag AND cd-inverted together (cd-gpios = <&gpb 26
-//                   GPIO_ACTIVE_LOW>; cd-inverted;) -- the vendor sdhci
-//                   driver only switches to GPIO detection when
-//                   cd-inverted is present, so neither line may be dropped.
-//   PA30 (gpio 30)  reset button, active-low (stock DT: power button)
-//   PC9  (gpio 73)  blue status LED, active-high
-//   PB27 (gpio 59)  USB OTG drvvbus in the stock DT -- not card detect
-//                   (earlier PB27/PB30 SD-CD theories were wrong)
-// PB29 (gpio 61) is SD power (gpio.mmc_power, active-low) -- runtime-side,
-// sequenced by S09mmc and injected into U-Boot's vmmc from thingino.json;
-// stock mmc0_pwrseq reset-gpios = <&gpb 29> confirms the same pin.
+// Noorio T110 (T41NQ, GC4023, AIC8800 USB) per-board nodes for the
+// 4.4.94 device tree; ignored on 3.10 kernels.
+// Pins: PB26 SD card detect, PA30 reset button (active-low),
+// PC9 blue status LED. SD power PB29 is runtime-side via
+// gpio.mmc_power (thingino.json -> S09mmc), not in the DT.
 
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
 #include <dt-bindings/pinctrl/ingenic-pinctrl.h>
 
-/* Card detect, stock-exact: PB26 active-low plus cd-inverted (the vendor
- * driver's switch to GPIO detection keys off cd-inverted alone). */
+/* PB26 card detect: stock DTB pairs cd-gpios with cd-inverted, and the
+ * vendor sdhci only switches to GPIO detection when cd-inverted is
+ * present -- keep both lines. */
 &msc0 {
 	ingenic,cd-gpios = <&gpb 26 GPIO_ACTIVE_LOW INGENIC_GPIO_NOBIAS>;
 	cd-inverted;
