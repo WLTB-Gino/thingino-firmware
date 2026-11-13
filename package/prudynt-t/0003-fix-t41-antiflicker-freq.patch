@@ -15,7 +15,6 @@ index a6733e2..189e788 100644
                            : IMPISP_ANTIFLICKER_NORMAL_MODE;
 -  attr.freq =
 -      (mode == 2) ? IMPISP_ANTIFLICKER_FREQ_60HZ : IMPISP_ANTIFLICKER_FREQ_50HZ;
-+/* plain 50/60: T40/T41 take uint8_t; T32 2.2.0 enums equal these */
 +  attr.freq = (mode == 2) ? 60 : 50;
    return IMP_ISP_Tuning_SetAntiFlickerAttr(IMPVI, &attr);
  #else

@@ -14,19 +14,15 @@ BOOTLOADER=$(echo ${BR2_TARGET_UBOOT_BOARD_DEFCONFIG:-$BR2_TARGET_UBOOT_BOARDNAM
 IMAGE_ID=${CAMERA}
 IMAGE_NAME=$(sed -n 's/^# NAME: //p' "$BR2_EXTERNAL/${CAMERA_SUBDIR}/${CAMERA}/${CAMERA}_defconfig" 2>/dev/null | head -1)
 HOSTNAME=ing-$(echo $IMAGE_ID | awk -F '_' '{print $1 "-" $2}')
-echo "$HOSTNAME" > ${TARGET_DIR}/etc/hostname
+echo "$HOSTNAME" >${TARGET_DIR}/etc/hostname
 sed -i "/^127.0.1.1/c127.0.1.1\t$HOSTNAME" ${TARGET_DIR}/etc/hosts
 
 # NAND keeps the U-Boot env in the UBI "uboot-env" volume, so fw_printenv/setenv
 # must target that volume instead of a raw MTD offset (the NOR default).
 if grep -q "^BR2_THINGINO_FLASH_NAND=y" "$BR2_CONFIG"; then
-	printf '/dev/ubi0:uboot-env 0x0 0x10000 0x10000\n' > "${TARGET_DIR}/etc/fw_env.config"
-# Kconfig-era U-Boot trees (2026.07+) use CONFIG_ENV_SIZE=0x10000, so the NOR
-# fw_env.config must cover the full 64K env or fw_printenv/fw_setenv report a
-# bad CRC against the 64K blob mkenvimage writes at 0x50000. The 2013.07 tree
-# stays at 0x8000 (mirrors UB_ENV_SIZE in the Makefile) via the overlay default.
+	printf '/dev/ubi0:uboot-env 0x0 0x10000 0x10000\n' >"${TARGET_DIR}/etc/fw_env.config"
 elif grep -q "^BR2_THINGINO_UBOOT_VERSION_2026_07=y" "$BR2_CONFIG"; then
-	printf '/dev/mtd1 0x0 0x10000 0x10000\n' > "${TARGET_DIR}/etc/fw_env.config"
+	printf '/dev/mtd1 0x0 0x10000 0x10000\n' >"${TARGET_DIR}/etc/fw_env.config"
 fi
 
 cd $BR2_EXTERNAL
@@ -91,7 +87,7 @@ FILE=${TARGET_DIR}/usr/lib/os-release
 tmpfile=$(mktemp)
 
 # Prefix exiting buildroot entries
-sed 's/^/BUILDROOT_/' $FILE > $tmpfile
+sed 's/^/BUILDROOT_/' $FILE >$tmpfile
 
 # Add Thingino entries
 echo "NAME=Thingino
@@ -135,7 +131,7 @@ fi
 # Toolchain specific fixes
 rm -f ${TARGET_DIR}/usr/bin/ldd
 echo '#!/bin/sh
-LD_TRACE_LOADED_OBJECTS=1 exec "$@"' > ${TARGET_DIR}/usr/bin/ldd && chmod +x ${TARGET_DIR}/usr/bin/ldd
+LD_TRACE_LOADED_OBJECTS=1 exec "$@"' >${TARGET_DIR}/usr/bin/ldd && chmod +x ${TARGET_DIR}/usr/bin/ldd
 
 # Resolve the real on-disk lib directory: with merged-usr rootfs, /lib is a
 # symlink to /usr/lib. Operate on /usr/lib directly so we never accidentally

@@ -43,7 +43,6 @@ Signed-off-by: Gino (WLTB-Gino) <gino@wltechblog.com>
  
  		if (motor->pdata->motor_st4_gpio != -1)
  			gpio_free(motor->pdata->motor_st4_gpio);
-+		/* phase gone, no more phases will be armed */
 +		del_timer_sync(&motor->min_timer);
 +		del_timer_sync(&motor->max_timer);
  		motor->pdata = 0;
@@ -59,12 +58,6 @@ Signed-off-by: Gino (WLTB-Gino) <gino@wltechblog.com>
  		proc_remove(mdev->proc);
  
  	misc_deregister(&mdev->misc_dev);
-+	/*
-+	 * Userspace is gone and every callback touching mdev has been
-+	 * stopped: tear down the mutex and TCU channel after the device
-+	 * entry points are removed, so nothing can dereference them while
-+	 * they are being released.
-+	 */
 +	mutex_destroy(&mdev->dev_mutex);
 +
 +	ingenic_tcu_counter_stop(mdev->tcu);
