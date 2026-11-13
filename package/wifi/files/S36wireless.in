@@ -310,9 +310,6 @@ start() {
 	@endif@
 
 	@if WIFI_MODULE_IS_USB@
-	# USB: the driver must be loaded before wlan0 can exist; the netdev
-	# registers only after bus enumeration + firmware download, which can
-	# exceed 5s on cold boot.
 	if ! grep -q "^$WLAN_MODULE_NAME\b" /proc/modules; then
 		echo "Loading $WLAN_MODULE_NAME module with parameters $WLAN_MODULE_OPTS"
 		modprobe $WLAN_MODULE_NAME $WLAN_MODULE_OPTS

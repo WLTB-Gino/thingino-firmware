@@ -104,7 +104,6 @@
 	cd-inverted;
 
 	/* special property */
-	/* SD card detect is PB26 on this board (stock marmot.dts pins 27) */
 	ingenic,wp-gpios = <0>;
 	ingenic,cd-gpios = <&gpb 26 GPIO_ACTIVE_LOW INGENIC_GPIO_NOBIAS>;
 	ingenic,rst-gpios = <0>;

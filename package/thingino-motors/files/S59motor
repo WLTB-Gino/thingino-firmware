@@ -89,8 +89,6 @@ set_motor_phases() {
 
 home_motors() {
 	echo "Home motors"
-	# A lost homing request means the camera boots with an unknown
-	# position and no reference; retry so it cannot vanish silently.
 	if ! run_motors motors -r; then
 		echo "Homing request failed after retries; continuing" >&2
 	fi
@@ -98,7 +96,6 @@ home_motors() {
 
 set_motors_speed() {
 	echo "Set motors speed to $speed_pan"
-	# -s still needs the control socket, so retry like every other call.
 	if ! run_motors motors -s $1; then
 		echo "Speed setting failed after retries" >&2
 	fi
@@ -124,8 +121,6 @@ position_motors() {
 	fi
 
 	echo "Move to $x,$y"
-	# Same retry rule: a lost preset move must not leave the camera
-	# pointed at a random wall after boot.
 	if ! run_motors motors -d h -x $x -y $y; then
 		echo "Preset-position move failed after retries" >&2
 	fi
@@ -193,14 +188,6 @@ start() {
 	# shellcheck disable=SC2086
 	start_daemon $DAEMON_ARGS
 
-	# The daemon opens /dev/motor, homes (which can take several seconds),
-	# and only then binds the control socket /dev/md. Until it binds,
-	# every `motors` invocation exits nonzero with no error output, so a
-	# fixed sleep races the daemon: lost homing, lost speed, and the
-	# preset-position move firing against a socket that is not listening
-	# yet (or mid-homing). Instead of sleeping a fixed time, wait until a
-	# read-only query actually round-trips, then retry every command a
-	# few times so a lost packet can never silently skip a step.
 	wait_for_daemon() {
 		local i=0
 		while [ "$i" -lt 100 ]; do
