@@ -39,7 +39,7 @@ Signed-off-by: Gino (WLTB-Gino) <gino@wltechblog.com>
  	free_irq(mdev->run_step_irq, mdev);
  	for(i = 0; i < HAS_MOTOR_CNT; i++) {
  		motor = &(mdev->motors[i]);
-@@ -1041,19 +1038,29 @@
+@@ -1041,19 +1038,22 @@
  
  		if (motor->pdata->motor_st4_gpio != -1)
  			gpio_free(motor->pdata->motor_st4_gpio);

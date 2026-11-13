@@ -9,7 +9,7 @@ diff --git a/src/isp/imp_hal.cpp b/src/isp/imp_hal.cpp
 index a6733e2..189e788 100644
 --- a/src/isp/imp_hal.cpp
 +++ b/src/isp/imp_hal.cpp
-@@ -948,8 +948,8 @@ int set_anti_flicker(int mode) {
+@@ -948,8 +948,7 @@ int set_anti_flicker(int mode) {
    IMPISPAntiflickerAttr attr{};
    attr.mode = (mode == 0) ? IMPISP_ANTIFLICKER_DISABLE_MODE
                            : IMPISP_ANTIFLICKER_NORMAL_MODE;
