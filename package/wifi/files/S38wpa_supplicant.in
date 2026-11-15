@@ -88,8 +88,8 @@ credentials_from_card() {
 	envfile="/mnt/mmcblk0p1/uenv.txt"
 	[ -f $envfile ] || return 0
 
-	ssid="$(grep '^wlan_ssid=' $envfile | cut -d= -f2-)"
-	password="$(grep '^wlan_pass=' $envfile | cut -d= -f2-)"
+	ssid="$(grep '^wlan_ssid=' $envfile | cut -d= -f2- | tr -d '\r')"
+	password="$(grep '^wlan_pass=' $envfile | cut -d= -f2- | tr -d '\r')"
 	wlan configure "$ssid" "$password"
 }
 
