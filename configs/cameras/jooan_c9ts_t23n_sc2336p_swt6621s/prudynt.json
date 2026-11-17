@@ -1,5 +1,8 @@
 {
   "sensor": {
     "model": "cv2005"
+  },
+  "daynight": {
+    "enabled": false
   }
 }
