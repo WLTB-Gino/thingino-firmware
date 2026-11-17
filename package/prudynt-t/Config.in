@@ -246,6 +246,16 @@ config BR2_PACKAGE_PRUDYNT_T_WEBSOCKETS
 	  Disable this if you only need RTSP/HTTP interfaces and want to drop
 	  the libwebsockets dependency.
 
+config BR2_PACKAGE_PRUDYNT_T_NO_HW_IVS
+	bool "Disable hardware IVS (motion) support"
+	depends on BR2_PACKAGE_PRUDYNT_T
+	default y if BR2_SOC_FAMILY = "t23"
+	help
+	  Compile out IMP_IVS motion-detection support for streamer
+	  backends whose SDK lacks usable hardware IVS. Enabling motion
+	  on such platforms binds IMP_IVS to the framesource and tears
+	  down the ISP pipeline, killing all video streams.
+
 config BR2_PACKAGE_PRUDYNT_T_EXECINFO
 	bool "Enable execinfo backtraces"
 	depends on BR2_PACKAGE_PRUDYNT_T
