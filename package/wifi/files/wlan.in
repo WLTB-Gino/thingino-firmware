@@ -154,10 +154,11 @@ configure() {
 		exit 1
 	fi
 
-	# ${#ssid} counts bytes in ash; 802.11 allows 32, and wpa_supplicant
-	# rejects the whole network block beyond that.
-	if [ ${#ssid} -gt 32 ]; then
-		echo "Error: SSID is ${#ssid} bytes long; the maximum is 32 bytes." >&2
+	# SSIDs are counted in bytes; 802.11 allows 32, and wpa_supplicant
+	# rejects the whole network block beyond that. wc -c counts bytes
+	# regardless of the busybox Unicode build.
+	if [ "$(printf %s "$ssid" | wc -c)" -gt 32 ]; then
+		echo "Error: SSID is longer than 32 bytes; the maximum is 32 bytes." >&2
 		exit 1
 	fi
 
@@ -255,8 +256,8 @@ setup() {
 	read -r -p "Enter Wi-Fi SSID: " ssid
 	while :; do
 		read -r -p "Enter Wi-Fi Password: " password
-		[ ${#password} -ge 8 ] && [ ${#password} -le 64 ] && break
-		echo -c 160 "Passwords is not between 8 and 64 characters. Please try again."
+		[ ${#password} -ge 8 ] && [ ${#password} -le 63 ] && break
+		echo -c 160 "Passwords is not between 8 and 63 characters. Please try again."
 	done
 	read -r -p "Enable access point mode? [y/N]: " ap_answer
 	case "$ap_answer" in
