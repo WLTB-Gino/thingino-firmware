@@ -265,6 +265,19 @@ run_cgi GET
 check "T11 missing config: enabled false" [ "$(jsonq webtorrent.enabled)" = false ]
 check "T11b missing config: share_key null" [ "$(jsonq webtorrent.share_key)" = null ]
 
+# ── T12: empty form fields fall back to rwd defaults (placeholder is
+# display-only; present-but-empty must not shadow rwd's built-ins) ──
+seed_conf
+run_cgi POST 'action=save&enabled=true&tracker=&stun_server=&stun_port=&tls_verify=true&viewer_url=&share_key='
+check "T12 save with all-empty fields succeeds" status_is 200
+check "T12b empty tracker -> default" [ "$(grep -E '^tracker' $MOCKCONF | awk '{print $3}')" = "wss://tracker.openwebtorrent.com" ]
+check "T12c empty stun_server -> default" [ "$(grep -E '^stun_server' $MOCKCONF | awk '{print $3}')" = "stun.l.google.com" ]
+check "T12d empty stun_port -> default" [ "$(grep -E '^stun_port' $MOCKCONF | awk '{print $3}')" = "19302" ]
+check "T12e empty viewer_url -> default" [ "$(grep -E '^viewer_url' $MOCKCONF | awk '{print $3}')" = "https://viewer.thingino.com/share.html" ]
+run_cgi POST 'action=save&enabled=true&tracker=wss%3A%2F%2Fcustom.example%2Fws&stun_server=stun.custom.example&stun_port=3478&tls_verify=true&viewer_url=https%3A%2F%2Fviewer.example.com%2Fs.html&share_key='
+check "T12f explicit values still win" [ "$(grep -E '^tracker' $MOCKCONF | awk '{print $3}')" = "wss://custom.example/ws" ]
+check "T12g explicit stun_port still wins" [ "$(grep -E '^stun_port' $MOCKCONF | awk '{print $3}')" = "3478" ]
+
 echo
 echo "pass=$PASS fail=$FAIL"
 [ "$FAIL" = 0 ]

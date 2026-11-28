@@ -6,6 +6,14 @@ require_auth
 
 CONFIG_SECTION="webtorrent"
 
+# Defaults mirror rwd's own fallbacks (rwd_main.c; also the commented
+# values in config/raptor.conf). The page's placeholders show exactly
+# these, and an empty field means "use the default".
+DEFAULT_TRACKER="wss://tracker.openwebtorrent.com"
+DEFAULT_STUN_SERVER="stun.l.google.com"
+DEFAULT_STUN_PORT="19302"
+DEFAULT_VIEWER_URL="https://viewer.thingino.com/share.html"
+
 send_json() {
 	status="${2:-200 OK}"
 	printf 'Status: %s\n' "$status"
@@ -326,11 +334,15 @@ parse_form_data() {
 process_save() {
 	read_config
 	wt_enabled=$(normalize_bool "$POST_enabled")
-	wt_tracker="$POST_tracker"
-	wt_stun_server="$POST_stun_server"
-	wt_stun_port="$POST_stun_port"
+	# Empty = "use the default". The form fields hold nothing until the
+	# user types, and placeholders are display-only, so saving an empty
+	# field must not pin an empty value over rwd's built-in fallback
+	# (present-but-empty beats the default in rss_config_get_str).
+	wt_tracker=${POST_tracker:-$DEFAULT_TRACKER}
+	wt_stun_server=${POST_stun_server:-$DEFAULT_STUN_SERVER}
+	wt_stun_port=${POST_stun_port:-$DEFAULT_STUN_PORT}
 	wt_tls_verify=$(normalize_bool "$POST_tls_verify")
-	wt_viewer_url="$POST_viewer_url"
+	wt_viewer_url=${POST_viewer_url:-$DEFAULT_VIEWER_URL}
 	wt_share_key="$POST_share_key"
 
 	if [ -n "$wt_tracker" ]; then
